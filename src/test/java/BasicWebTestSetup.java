@@ -40,7 +40,7 @@ public class BasicWebTestSetup {
     public void openWebpageAndTakeScreenshot() {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
-        String url = "https://www.testobject.com";
+        String url = "https://www.google.com";
 
         driver.get(url);
         takeScreenshot();
