@@ -18,7 +18,7 @@ public class BasicWebTestSetup {
     public void setUp() throws Exception {
         DesiredCapabilities capabilities = new DesiredCapabilities();
 
-        capabilities.setCapability("testobject_app_id", 1);
+        capabilities.setCapability("testobject_app_id", "1");
         capabilities.setCapability("testobject_api_key", System.getenv("TESTOBJECT_API_KEY_WEB"));
         capabilities.setCapability("testobject_device", System.getenv("TESTOBJECT_DEVICE_ID"));
         capabilities.setCapability("testobject_appium_version", "1.3.7");
