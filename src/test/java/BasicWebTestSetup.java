@@ -23,7 +23,7 @@ public class BasicWebTestSetup {
         capabilities.setCapability("testobject_device", System.getenv("TESTOBJECT_DEVICE_ID"));
         capabilities.setCapability("testobject_appium_version", "1.3.7");
 
-        driver = new AndroidDriver(new URL("https://app.testobject.com:443/api/appium/wd/hub"), capabilities);
+        driver = new AndroidDriver(new URL(System.getenv("APPIUM_SERVER")), capabilities);
 
         System.out.println(driver.getCapabilities().getCapability("testobject_test_report_url"));
         System.out.println(driver.getCapabilities().getCapability("testobject_test_live_view_url"));
