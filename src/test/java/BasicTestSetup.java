@@ -34,7 +34,8 @@ public class BasicTestSetup {
         
         /* The driver will take care of establishing the connection, so we must provide
         * it with the correct endpoint and the requested capabilities. */
-        driver = new AndroidDriver(new URL("https://app.testobject.com:443/api/appium/wd/hub"), capabilities);
+        
+        driver = new AndroidDriver(new URL(System.getenv("APPIUM_SERVER")), capabilities);
 
         System.out.println(driver.getCapabilities().getCapability("testobject_test_report_url"));
         System.out.println(driver.getCapabilities().getCapability("testobject_test_live_view_url"));
