@@ -7,6 +7,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.URL;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class BasicWebTestSetup {
@@ -22,6 +23,11 @@ public class BasicWebTestSetup {
         capabilities.setCapability("testobject_api_key", System.getenv("TESTOBJECT_API_KEY_WEB"));
         capabilities.setCapability("testobject_device", System.getenv("TESTOBJECT_DEVICE_ID"));
         capabilities.setCapability("testobject_appium_version", "1.3.7");
+
+        // We generate a random UUID for later lookup in logs for debugging
+        String testUUID = UUID.randomUUID().toString();
+        System.out.println("TestUUID: " + testUUID);
+        capabilities.setCapability("testobject_testuuid", testUUID);
 
         driver = new AndroidDriver(new URL(System.getenv("APPIUM_SERVER")), capabilities);
 
