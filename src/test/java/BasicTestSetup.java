@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
+import java.util.UUID;
 
 public class BasicTestSetup {
 
@@ -31,6 +32,11 @@ public class BasicTestSetup {
 
         capabilities.setCapability("testobject_device", System.getenv("TESTOBJECT_DEVICE_ID")); // device id through env variable
         //capabilities.setCapability("testobject_device", "Motorola_Moto_E_2nd_gen_real"); // device id hardcoded
+
+        // We generate a random UUID for later lookup in logs for debugging
+        String testUUID = UUID.randomUUID().toString();
+        System.out.println("TestUUID: " + testUUID);
+        capabilities.setCapability("testobject_testuuid", testUUID);
         
         /* The driver will take care of establishing the connection, so we must provide
         * it with the correct endpoint and the requested capabilities. */
