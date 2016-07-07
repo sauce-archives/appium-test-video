@@ -22,7 +22,11 @@ public class BasicWebTestSetup {
         capabilities.setCapability("testobject_app_id", "1");
         capabilities.setCapability("testobject_api_key", System.getenv("TESTOBJECT_API_KEY_WEB"));
         capabilities.setCapability("testobject_device", System.getenv("TESTOBJECT_DEVICE_ID"));
-        capabilities.setCapability("testobject_appium_version", "1.3.7");
+
+        String appiumVersion = System.getenv("TESTOBJECT_APPIUM_VERSION");
+        if(appiumVersion != null && appiumVersion.trim().isEmpty() == false){
+            capabilities.setCapability("testobject_appium_version", appiumVersion);
+        }
 
         // We generate a random UUID for later lookup in logs for debugging
         String testUUID = UUID.randomUUID().toString();

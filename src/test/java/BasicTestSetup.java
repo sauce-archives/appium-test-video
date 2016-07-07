@@ -33,6 +33,11 @@ public class BasicTestSetup {
         capabilities.setCapability("testobject_device", System.getenv("TESTOBJECT_DEVICE_ID")); // device id through env variable
         //capabilities.setCapability("testobject_device", "Motorola_Moto_E_2nd_gen_real"); // device id hardcoded
 
+        String appiumVersion = System.getenv("TESTOBJECT_APPIUM_VERSION");
+        if(appiumVersion != null && appiumVersion.trim().isEmpty() == false){
+            capabilities.setCapability("testobject_appium_version", appiumVersion);
+        }
+
         // We generate a random UUID for later lookup in logs for debugging
         String testUUID = UUID.randomUUID().toString();
         System.out.println("TestUUID: " + testUUID);
