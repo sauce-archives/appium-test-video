@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
+import java.util.UUID;
 
 public class BasicTestSetup {
 
@@ -37,9 +38,15 @@ public class BasicTestSetup {
             capabilities.setCapability("testobject_appium_version", appiumVersion);
         }
 
+        // We generate a random UUID for later lookup in logs for debugging
+        String testUUID = UUID.randomUUID().toString();
+        System.out.println("TestUUID: " + testUUID);
+        capabilities.setCapability("testobject_testuuid", testUUID);
+        
         /* The driver will take care of establishing the connection, so we must provide
         * it with the correct endpoint and the requested capabilities. */
-        driver = new AndroidDriver(new URL("https://app.testobject.com:443/api/appium/wd/hub"), capabilities);
+        
+        driver = new AndroidDriver(new URL(System.getenv("APPIUM_SERVER")), capabilities);
 
         System.out.println(driver.getCapabilities().getCapability("testobject_test_report_url"));
         System.out.println(driver.getCapabilities().getCapability("testobject_test_live_view_url"));
