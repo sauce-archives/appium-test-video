@@ -28,6 +28,11 @@ public class BasicWebTestSetup {
             capabilities.setCapability("testobject_appium_version", appiumVersion);
         }
 
+		String cacheDevice = System.getenv("TESTOBJECT_CACHE_DEVICE");
+		if (cacheDevice != null && cacheDevice.trim().isEmpty() == false) {
+			capabilities.setCapability("testobject_cache_device", cacheDevice);
+		}
+
         // We generate a random UUID for later lookup in logs for debugging
         String testUUID = UUID.randomUUID().toString();
         System.out.println("TestUUID: " + testUUID);
