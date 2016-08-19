@@ -94,7 +94,7 @@ public class BasicTestSetup {
 		menuButton.click();
 
 		MobileElement advancedPanelButton = (MobileElement) (new WebDriverWait(driver, 60))
-				.until(ExpectedConditions.presenceOfElementLocated(By.name("Advanced panel")));
+				.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//android.widget.TextView[@text = 'Advanced panel']")));
 		advancedPanelButton.click();
 
         /* In the advanced panel... */
