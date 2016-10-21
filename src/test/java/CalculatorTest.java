@@ -3,16 +3,27 @@ import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testobject.api.TestObjectClient;
+import org.testobject.rest.api.appium.common.TestObjectCapabilities;
+import org.testobject.rest.api.model.AppiumTestReport;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
 
-public class BasicTestSetup {
+public class CalculatorTest {
+
+	@Rule
+	public TestName testName = new TestName();
 
 	private AppiumDriver driver;
 
@@ -43,24 +54,72 @@ public class BasicTestSetup {
 			capabilities.setCapability("testobject_cache_device", cacheDevice);
 		}
 
-		// We generate a random UUID for later lookup in logs for debugging
+		// We generate a random UUID for later lookup in logs for debugging. There's no practical purpose for this otherwise
+		// so you can remove it if you'd like.
 		String testUUID = UUID.randomUUID().toString();
 		System.out.println("TestUUID: " + testUUID);
 		capabilities.setCapability("testobject_testuuid", testUUID);
 
-        /* The driver will take care of establishing the connection, so we must provide
-		* it with the correct endpoint and the requested capabilities. */
-
-		driver = new AndroidDriver(new URL(System.getenv("APPIUM_SERVER")), capabilities);
+		driver = new AndroidDriver(getAppiumUrl(), capabilities);
 
 		System.out.println(driver.getCapabilities().getCapability("testobject_test_report_url"));
 		System.out.println(driver.getCapabilities().getCapability("testobject_test_live_view_url"));
 	}
 
-	/* We disable the driver after EACH test has been executed. */
 	@After
 	public void tearDown() {
+		// We need to close the Appium driver before the video will be available, but first we need information from capabilities
+		// that the TestObject server will have added.
+
+		Capabilities capabilities = driver.getCapabilities();
+		String team = (String)capabilities.getCapability(TestObjectCapabilities.TESTOBJECT_USER_ID);
+		String project = (String)capabilities.getCapability(TestObjectCapabilities.TESTOBJECT_PROJECT_ID);
+		long reportId = (long)capabilities.getCapability(TestObjectCapabilities.TESTOBJECT_TEST_REPORT_ID);
+
 		driver.quit();
+
+		String filename = testName.getMethodName() + ".mp4";
+		saveVideo(team, project, reportId, filename);
+	}
+
+	private static void saveVideo(String team, String project, long reportId, String filename) {
+		String username = System.getenv("TESTOBJECT_USERNAME");
+		String password = System.getenv("TESTOBJECT_PASSWORD");
+		if (username != null && password != null) {
+			System.out.println("Saving video to " + filename);
+
+			TestObjectClient client = TestObjectClient.Factory.create();
+			client.login(username, password);
+
+			File video = new File(filename);
+			String videoId = getVideoId(client, team, project, reportId);
+			client.saveVideo(team, project, videoId, video);
+			System.out.println("Saved test recording to " + filename);
+		} else {
+			System.out.println("No username/password set; not saving " + filename + " test recording.");
+		}
+
+	}
+
+	// Once the test is finished (from TestObject's end this is when we call driver.quit()), the video does not instantly show up.
+	// So we have a loop checking the test report for the videoId, after which point we can safely download it
+	private static String getVideoId(TestObjectClient client, String team, String project, long reportId) {
+		long timeout = System.currentTimeMillis() + 1000 * 60 * 10;
+		while (System.currentTimeMillis() < timeout) {
+			AppiumTestReport testReport = client.getTestReport(team, project, reportId);
+			if (testReport.getVideoId() != null) {
+				System.out.println("Got videoId");
+				return testReport.getVideoId();
+			} else {
+				System.out.println("No videoId. Waiting...");
+				try {
+					Thread.sleep(10 * 1000);
+				} catch (InterruptedException e) {
+					throw new RuntimeException("Encountered exception while waiting to get video ID");
+				}
+			}
+		}
+		throw new RuntimeException("Timeout expired while waiting for videoId for " + team + "/" + project + "/" + reportId);
 	}
 
 	/* A simple addition, it expects the correct result to appear in the result field. */
@@ -116,4 +175,9 @@ public class BasicTestSetup {
 
 	}
 
+	// We sometimes override the Appium URL for internal testing.
+	private URL getAppiumUrl() throws MalformedURLException {
+		String override = System.getenv("APPIUM_SERVER");
+		return new URL(override != null ? override : "http://appium.testobject.org/wd/hub");
+	}
 }
