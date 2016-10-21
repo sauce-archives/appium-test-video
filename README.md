@@ -12,3 +12,4 @@ Demonstrates saving the video of a TestObject test.
 
 ## Optional environment variables
 * `APPIUM_SERVER` (default `http://appium.testobject.com/wd/hub`)
+* `API_BASE_URL` (default `https://appium.testobject.com/api/rest`)
