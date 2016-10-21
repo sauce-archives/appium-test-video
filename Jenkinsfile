@@ -12,8 +12,10 @@ pipeline {
         stage("test") {
             sh "mvn test"
         }
+    }
 
-        stage("collect artifacts") {
+    postBuild {
+        always {
             archive "*.mp4"
             junit "target/surefire-reports/*.xml"
         }
