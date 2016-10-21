@@ -4,11 +4,6 @@ pipeline {
     agent docker:"maven:3.3.9"
 
     stages {
-        stage("git") {
-            sh "ls"
-            checkout scm
-        }
-
         stage("test") {
             sh "mvn test"
         }
