@@ -88,7 +88,7 @@ public class CalculatorTest {
 		if (username != null && password != null) {
 			System.out.println("Saving video to " + filename);
 
-			TestObjectClient client = TestObjectClient.Factory.create();
+			TestObjectClient client = TestObjectClient.Factory.create(getApiBaseUrl());
 			client.login(username, password);
 
 			File video = new File(filename);
@@ -179,5 +179,11 @@ public class CalculatorTest {
 	private URL getAppiumUrl() throws MalformedURLException {
 		String override = System.getenv("APPIUM_SERVER");
 		return new URL(override != null ? override : "http://appium.testobject.org/wd/hub");
+	}
+
+	// Same thing for the API URL.
+	private static String getApiBaseUrl() {
+		String override = System.getenv("API_BASE_URL");
+		return override != null ? override : "https://appium.testobject.com/api/rest";
 	}
 }
