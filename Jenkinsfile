@@ -10,7 +10,7 @@ pipeline {
         }
 
         stage("test") {
-            "mvn test"
+            sh "mvn test"
         }
 
         stage("collect artifacts") {
