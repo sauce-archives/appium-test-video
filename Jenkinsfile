@@ -18,7 +18,7 @@ pipeline {
         }
     }
 
-    notifications {
+    post {
         failure {
             slackSend channel: "#dev", color: "bad", message: "Appium video test failed against ${APPIUM_SERVER} - ${API_BASE_URL} (<${BUILD_URL}|open>)", teamDomain: "testobject", token: "***REMOVED***"
         }
