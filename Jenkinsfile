@@ -11,14 +11,11 @@ pipeline {
         }
     }
 
-    postBuild {
+    post {
         always {
             archive "*.mp4"
             junit "target/surefire-reports/*.xml"
         }
-    }
-
-    post {
         failure {
             slackSend channel: "#dev", color: "bad", message: "Appium video test failed against ${APPIUM_SERVER} - ${API_BASE_URL} (<${BUILD_URL}|open>)", teamDomain: "testobject", token: "***REMOVED***"
         }
