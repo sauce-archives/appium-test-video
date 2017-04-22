@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage("test") {
             steps {
-                sh "mvn test"
+                sh "mvn -B clean test"
             }
         }
     }
