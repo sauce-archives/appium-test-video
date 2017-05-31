@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage("test") {
             steps {
-                lock (label: 'Motorola_Moto_E_2nd_gen_real') {
+                lock (resource: 'Motorola_Moto_E_2nd_gen_real') {
                     sh "mvn -B clean test"
                 }
             }
