@@ -8,7 +8,9 @@ pipeline {
     stages {
         stage("test") {
             steps {
-                sh "mvn -B clean test"
+                lock (resource: 'Samsung_I9505_Galaxy_S4_real') {
+                    sh "mvn -B clean test"
+                }
             }
         }
     }
