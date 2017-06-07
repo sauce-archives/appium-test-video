@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage("test") {
             steps {
-                lock (resource: 'Motorola_Moto_E_2nd_gen_real') {
+                lock (resource: 'Samsung_I9505_Galaxy_S4_real') {
                     sh "mvn -B clean test"
                 }
             }
