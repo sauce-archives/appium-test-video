@@ -32,8 +32,10 @@ pipeline {
             junit "target/surefire-reports/*.xml"
         }
         failure {
-            if (params.APPIUM_SERVER == 'http://appium.testobject.com/wd/hub') {
-                slackSend channel: "#${env.SLACK_CHANNEL}", color: "bad",message: "Appium video test failed against ${APPIUM_SERVER} - ${API_BASE_URL} (<${BUILD_URL}|open>)", teamDomain: "${env.SLACK_SUBDOMAIN}", token: "${env.SLACK_TOKEN}"
+            script {
+                if (params.APPIUM_SERVER == 'http://appium.testobject.com/wd/hub') {
+                    slackSend channel: "#${env.SLACK_CHANNEL}", color: "bad",message: "Appium video test failed against ${APPIUM_SERVER} - ${API_BASE_URL} (<${BUILD_URL}|open>)", teamDomain: "${env.SLACK_SUBDOMAIN}", token: "${env.SLACK_TOKEN}"
+                }
             }
         }
     }
