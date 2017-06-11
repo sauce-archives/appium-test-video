@@ -166,7 +166,7 @@ public class CalculatorTest {
 	// We sometimes override the Appium URL for internal testing.
 	private URL getAppiumUrl() throws MalformedURLException {
 		String override = System.getenv("APPIUM_SERVER");
-		return new URL(override != null ? override : "http://appium.testobject.org/wd/hub");
+		return new URL(override != null ? override : "http://appium.testobject.com/wd/hub");
 	}
 
 	// Same thing for the API URL.
