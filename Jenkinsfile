@@ -2,6 +2,9 @@
 
 def runTest() {
     node {
+        stage("checkout") {
+            checkout scm
+        }
         stage("test") {
             docker.image("maven:3.3.9").inside {
                 try {
