@@ -1,42 +1,34 @@
 #!groovy
 
-pipeline {
-    agent {
-        docker "maven:3.3.9"
-    }
-
-    stages {
-        stage("staging test") {
-            when {
-                expression { params.APPIUM_SERVER == 'http://appium.staging.testobject.org/wd/hub' }
-            }
-            steps {
-                lock (resource: params.TESTOBJECT_DEVICE_ID) {
-                    sh "mvn -B clean test"
-                }
-            }
-        }
+def runTest() {
+    node {
         stage("test") {
-            when {
-                 expression { params.APPIUM_SERVER != 'http://appium.staging.testobject.org/wd/hub' }
-            }
-            steps {
-                sh "mvn -B clean test"
-            }
-        }
-    }
-
-    post {
-        always {
-            archive "*.mp4"
-            junit "target/surefire-reports/*.xml"
-        }
-        failure {
-            script {
-                if (params.APPIUM_SERVER == 'http://appium.testobject.com/wd/hub') {
-                    slackSend channel: "#${env.SLACK_CHANNEL}", color: "bad",message: "Appium video test failed against ${APPIUM_SERVER} - ${API_BASE_URL} (<${BUILD_URL}|open>)", teamDomain: "${env.SLACK_SUBDOMAIN}", token: "${env.SLACK_TOKEN}"
+            docker.image("maven:3.3.9").inside {
+                try {
+                    sh "mvn -B clean test"
+                } finally {
+                    junit "**/test-results/*.xml"
+                    archive "*.mp4"
                 }
             }
         }
+    }
+}
+
+if (env.APPIUM_SERVER.contains("staging.testobject.org")) {
+    lock (resource: params.TESTOBJECT_DEVICE_ID) {
+        runTest()
+    }
+} else {
+    try {
+        runTest()
+        if (env.SUCCESS_NOTIFICATION_ENABLED) {
+            slackSend channel: "#${env.SLACK_CHANNEL}", color: "good", message: "`${env.JOB_BASE_NAME}` passed (<${BUILD_URL}|open>)", teamDomain: "${env.SLACK_SUBDOMAIN}", token: "${env.SLACK_TOKEN}"
+        }
+    } catch (err) {
+        if (env.APPIUM_SERVER.contains("testobject.com") || env.FAILURE_NOTIFICATION_ENABLED) {
+            slackSend channel: "#${env.SLACK_CHANNEL}", color: "bad", message: "`${env.JOB_BASE_NAME}` failed: $err (<${BUILD_URL}|open>)", teamDomain: "${env.SLACK_SUBDOMAIN}", token: "${env.SLACK_TOKEN}"
+        }
+        throw err
     }
 }
