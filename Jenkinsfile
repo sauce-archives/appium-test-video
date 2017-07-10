@@ -6,7 +6,7 @@ def runTest() {
             checkout scm
         }
         stage("test") {
-            docker.image("maven:3.3.9").inside {
+            docker.image("maven:3.3.9").inside("-v $HOME/.m2:/root/.m2") {
                 try {
                     sh "mvn -B clean test"
                 } finally {
