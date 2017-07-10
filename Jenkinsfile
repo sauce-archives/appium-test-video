@@ -10,7 +10,7 @@ def runTest() {
                 try {
                     sh "mvn -B clean test"
                 } finally {
-                    junit "**/test-results/*.xml"
+                    junit "target/surefire-reports/*.xml"
                     archive "*.mp4"
                 }
             }
