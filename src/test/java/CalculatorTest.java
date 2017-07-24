@@ -41,7 +41,7 @@ public class CalculatorTest {
 
 		capabilities.setCapability("testobject_app_id", "1");
 
-		capabilities.setCapability("testobject_device", System.getenv("TESTOBJECT_DEVICE_ID")); // device id through env variable
+		capabilities.setCapability("testobject_device", System.getenv("TESTOBJECT_DEVICE")); // device id through env variable
 		//capabilities.setCapability("testobject_device", "Motorola_Moto_E_2nd_gen_real"); // device id hardcoded
 
 		String appiumVersion = System.getenv("TESTOBJECT_APPIUM_VERSION");
@@ -175,7 +175,7 @@ public class CalculatorTest {
 
 	// We sometimes override the Appium URL for internal testing.
 	private URL getAppiumUrl() throws MalformedURLException {
-		String override = System.getenv("APPIUM_SERVER");
+		String override = System.getenv("APPIUM_URL");
 		return new URL(override != null ? override : "http://appium.testobject.com/wd/hub");
 	}
 
